@@ -113,8 +113,8 @@ public class CajaServiceImpl implements CajaService {
         if (caja.getEstado() == CajaEstado.ABIERTA) {
             throw new InvalidEntryException("La caja ya está abierta");
         }
-        if (request.saldoInicial() < 0) {
-            throw new InvalidEntryException("El saldo inicial no puede ser negativo");
+        if (request.saldoInicial() <= 0) {
+            throw new InvalidEntryException("El saldo inicial debe ser mayor que cero");
         }
         caja.setEstado(CajaEstado.ABIERTA);
         caja.setSaldoActual(request.saldoInicial());
