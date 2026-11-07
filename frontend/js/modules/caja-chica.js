@@ -2,10 +2,14 @@ let state = {
   caja: null,
   movimientos: [],
   gastos: [],
-  filtroMov: 'todos'
+  filtroMov: 'todos',
+  skipAutoOpen: false
 };
 
 export function init() {
+  const root = document.getElementById('cajaChicaCards');
+  if (root?.dataset.eventsBound === 'true') return;
+  root?.setAttribute('data-events-bound', 'true');
   bindEvents();
   cargarCajaChica();
 }
@@ -69,9 +73,10 @@ async function cargarCajaChica() {
     await cargarGastos();
     renderMovimientos();
 
-    if (!abierta) {
+    if (!abierta && !state.skipAutoOpen) {
       await abrirCaja();
     }
+    state.skipAutoOpen = false;
   } catch (err) { Utils.showToast(err.message, 'error'); }
 }
 
@@ -226,7 +231,12 @@ async function abrirCaja() {
   const saldo = await Utils.promptInput('Abrir Caja Chica', '\u00bfCon cu\u00e1nto efectivo comienzas?', '0');
   if (saldo === null) return;
   try {
-    await API.post('/cajas/' + state.caja.idCaja + '/apertura', { saldoInicial: parseFloat(saldo) || 0 });
+    const saldoInicial = parseFloat(saldo);
+    if (!Number.isFinite(saldoInicial) || saldoInicial <= 0) {
+      Utils.showToast('El saldo inicial debe ser mayor que cero', 'warning');
+      return;
+    }
+    await API.post('/cajas/' + state.caja.idCaja + '/apertura', { saldoInicial });
     Utils.showToast('Caja chica abierta', 'success');
     cargarCajaChica();
   } catch (err) { Utils.showToast(err.message, 'error'); }
@@ -234,6 +244,10 @@ async function abrirCaja() {
 
 async function cerrarCaja() {
   if (!state.caja) return;
+  if (state.caja.estado !== 'ABIERTA') {
+    Utils.showToast('La caja chica ya está cerrada', 'warning');
+    return;
+  }
   const confirmed = await Utils.confirmAction('\u00bfCerrar caja chica? Al cerrar se generar\u00e1 el corte del per\u00edodo.', 'Confirmar', 'Cerrar');
   if (!confirmed) return;
   try {
@@ -241,6 +255,7 @@ async function cerrarCaja() {
     Utils.showToast('Caja chica cerrada y corte generado', 'success');
     state.movimientos = [];
     state.gastos = [];
+    state.skipAutoOpen = true;
     renderMovimientos();
     cargarCajaChica();
   } catch (err) { Utils.showToast(err.message, 'error'); }
@@ -333,7 +348,7 @@ function exportarMovimientos(formato) {
       `<td>${Utils.esc(r.estado || '-')}</td>` +
       `<td class="right">${(r.tipo === 'INGRESO' ? '+' : '-')}${Utils.formatMonto(r.monto)}</td></tr>`).join('');
     Utils.openPrintWindow('Movimientos de Caja Chica',
-      '<h2><img src="assets/imgs/siga-logo.svg" style="max-height:72px;max-width:340px" alt="SIGA"></h2>' +
+      '<h2><img src="assets/imgs/siga-logo.svg" style="max-height:72px;max-width:340px" alt="DEMO"></h2>' +
       '<h4>Movimientos de Caja Chica</h4>' +
       '<p style="text-align:center;color:#666;font-size:11px">Caja: ' + Utils.esc(state.caja ? state.caja.nombre : '-') + '</p>' +
       '<table><thead><tr><th>Fecha</th><th>Tipo</th><th>Concepto</th><th>Estado</th><th class="right">Monto</th></tr></thead>' +

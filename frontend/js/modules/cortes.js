@@ -294,7 +294,7 @@ function reimprimirCorte() {
 </head>
 <body>
   <div class="header">
-    <img src="assets/imgs/siga-logo.svg" class="logo" alt="SIGA">
+    <img src="assets/imgs/siga-logo.svg" class="logo" alt="DEMO">
     <div class="sub">Corte de Caja</div>
   </div>
   <div class="divider"></div>

@@ -67,14 +67,15 @@ const Utils = {
 
   async cargarVista(ruta, modulo) {
     try {
-      document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
-      document.querySelectorAll('.modal.show').forEach(m => {
+      document.querySelectorAll('.modal').forEach(m => {
         try {
           const inst = bootstrap.Modal.getInstance(m);
           if (inst) inst.hide();
         } catch (_) {}
-        m.classList.remove('show');
+        if (m.parentNode !== document.getElementById('main-content')) m.remove();
       });
+      document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+      document.querySelectorAll('.prompt-overlay').forEach(p => p.remove());
       document.body.classList.remove('modal-open');
       document.body.style.removeProperty('overflow');
       document.body.style.removeProperty('padding-right');
@@ -159,7 +160,23 @@ const Utils = {
     return new Promise(function (resolve) {
       const modalEl = document.getElementById('confirmModal');
       if (!modalEl) {
-        resolve(false);
+        const overlay = document.createElement('div');
+        overlay.className = 'prompt-overlay confirm-overlay';
+        overlay.innerHTML =
+          '<div class="prompt-dialog" role="dialog" aria-modal="true">' +
+            '<h6 class="fw-bold">' + (title || 'Confirmar acción') + '</h6>' +
+            '<p class="confirm-dialog-message">' + (message || '¿Deseas continuar?') + '</p>' +
+            '<div class="d-flex gap-2 justify-content-end">' +
+              '<button type="button" class="btn btn-sm btn-light confirm-cancel">Cancelar</button>' +
+              '<button type="button" class="btn btn-sm btn-primary confirm-accept">' + (buttonText || 'Confirmar') + '</button>' +
+            '</div>' +
+          '</div>';
+        document.body.appendChild(overlay);
+        const close = value => { overlay.remove(); resolve(value); };
+        overlay.querySelector('.confirm-cancel').addEventListener('click', () => close(false));
+        overlay.querySelector('.confirm-accept').addEventListener('click', () => close(true));
+        overlay.addEventListener('click', e => { if (e.target === overlay) close(false); });
+        overlay.querySelector('.confirm-accept').focus();
         return;
       }
 
@@ -192,6 +209,7 @@ const Utils = {
 
   promptInput(title, label, defaultValue) {
     return new Promise(function (resolve) {
+      document.querySelectorAll('.prompt-overlay').forEach(el => el.remove());
       const overlay = document.createElement('div');
       overlay.className = 'prompt-overlay';
       overlay.style.pointerEvents = 'auto';
@@ -594,6 +612,8 @@ const opt = select.options[select.selectedIndex];
     const menu = document.createElement('div');
     menu.className = 'kebab-menu-float';
     menu.style.visibility = 'hidden';
+    menu.style.position = 'fixed';
+    menu.style.zIndex = '20000';
     document.body.appendChild(menu);
 
     items.forEach(function (it) {
@@ -610,6 +630,7 @@ const opt = select.options[select.selectedIndex];
     });
 
     const MENU_W = 210;
+    menu.style.width = MENU_W + 'px';
     const menuH = menu.offsetHeight || (items.length * 34 + 10);
     const r = anchor.getBoundingClientRect();
     const viewW = window.innerWidth;
@@ -659,8 +680,8 @@ const opt = select.options[select.selectedIndex];
     if (this._modalStackingInit) return;
     this._modalStackingInit = true;
 
-    let zCounter = 1055;
-    const BASE_Z = 1055;
+    let zCounter = 3005;
+    const BASE_Z = 3005;
 
     document.addEventListener('show.bs.modal', (e) => {
       if (!e.target || typeof e.target.classList !== 'object' || !e.target.classList.contains('modal')) return;

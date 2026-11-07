@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIGA — Panel</title>
+  <title>DEMO — Panel</title>
   <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/fontawesome/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
         <div class="login-brand-icon">
           <i class="fas fa-chart-line"></i>
         </div>
-        <h1 class="login-brand-name">SIGA</h1>
+        <h1 class="login-brand-name">DEMO</h1>
         <p class="login-brand-desc">Sistema de Administración</p>
       </div>
     </div>
@@ -46,7 +46,7 @@
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-lock"></i></span>
               <input type="password" class="form-control" id="password" placeholder="••••••••" required autocomplete="current-password">
-              <button class="btn btn-outline-secondary px-3" type="button" id="toggle-password" tabindex="-1">
+              <button class="btn btn-outline-secondary px-3" type="button" id="toggle-password" aria-label="Mostrar contraseña">
                 <i class="fas fa-eye" id="toggle-password-icon"></i>
               </button>
             </div>
@@ -61,7 +61,7 @@
         </form>
       </div>
       <div class="login-footer">
-        <small class="text-muted">&copy; 2026 SIGA — Todos los derechos reservados</small>
+        <small class="text-muted">&copy; 2026 DEMO — Todos los derechos reservados</small>
       </div>
     </div>
   </div>
@@ -78,18 +78,21 @@
         <div class="topbar-brand-icon">
           <i class="fas fa-chart-line icon-brand"></i>
         </div>
-        <span class="topbar-brand">SIGA</span>
+        <span class="topbar-brand">DEMO</span>
       </div>
       <div class="topbar-right">
-        <button class="btn btn-topbar-icon" id="btn-reload" title="Recargar módulo actual">
+        <button class="btn btn-topbar-icon" id="btn-reload" title="Recargar módulo actual" aria-label="Recargar módulo actual">
           <i class="fas fa-sync-alt"></i>
+        </button>
+        <button class="btn btn-topbar-icon" id="btn-theme-toggle" type="button" title="Cambiar tema" aria-label="Cambiar tema">
+          <i class="fas fa-moon"></i>
         </button>
         <div class="topbar-user-info">
           <span class="topbar-greeting">Bienvenido,</span>
           <span class="topbar-user fw-semibold" id="display-name">Usuario</span>
         </div>
         <div class="topbar-avatar" id="topbar-avatar">U</div>
-        <button class="btn btn-topbar-logout" id="btn-logout" title="Cerrar sesión">
+        <button class="btn btn-topbar-logout" id="btn-logout" title="Cerrar sesión" aria-label="Cerrar sesión">
           <i class="fas fa-sign-out-alt"></i>
         </button>
       </div>
@@ -102,7 +105,7 @@
           <i class="fas fa-chart-line"></i>
         </div>
         <div class="sidebar-brand-text">
-          <div class="sidebar-title">SIGA</div>
+          <div class="sidebar-title">DEMO</div>
           <small class="sidebar-sub">Panel</small>
         </div>
       </div>

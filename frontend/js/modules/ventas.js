@@ -47,6 +47,7 @@ const REGIMENES_FISCALES = [
 ];
 
 export function init() {
+  if (document.querySelector('.prompt-overlay')) return;
   bindEvents();
   cargarConfiguraciones();
   const lastCajaId = localStorage.getItem('lastCajaId');
@@ -87,7 +88,12 @@ async function entrarCajaNormal() {
     }
     const saldo = await Utils.promptInput('Abrir Caja', '\u00bfCon cu\u00e1nto efectivo comienzas?', '0');
     if (saldo === null) return;
-    await API.post('/cajas/' + caja.idCaja + '/apertura', { saldoInicial: parseFloat(saldo) || 0 });
+    const saldoInicial = parseFloat(saldo);
+    if (!Number.isFinite(saldoInicial) || saldoInicial <= 0) {
+      Utils.showToast('El saldo inicial debe ser mayor que cero', 'warning');
+      return;
+    }
+    await API.post('/cajas/' + caja.idCaja + '/apertura', { saldoInicial });
     state.caja = await API.get('/cajas/' + caja.idCaja);
     localStorage.setItem('lastCajaId', caja.idCaja);
     Utils.showToast('Caja abierta exitosamente', 'success');
@@ -1345,7 +1351,7 @@ function imprimirTicketCorte(corte) {
 </head>
 <body>
   <div class="header">
-    <img src="assets/imgs/siga-logo.svg" class="logo" alt="SIGA">
+    <img src="assets/imgs/siga-logo.svg" class="logo" alt="DEMO">
     <div class="sub">Corte de Caja</div>
   </div>
   <div class="divider"></div>

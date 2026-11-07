@@ -1,5 +1,9 @@
 const Auth = {
   init() {
+    const savedTheme = localStorage.getItem('demo-theme');
+    if (savedTheme === 'dark' || savedTheme === 'light') {
+      document.documentElement.dataset.theme = savedTheme;
+    }
     const form = document.getElementById('login-form');
     if (form) form.addEventListener('submit', event => { event.preventDefault(); this.login(); });
     const toggle = document.getElementById('toggle-password');
@@ -7,7 +11,8 @@ const Auth = {
       const input = document.getElementById('password');
       const icon = document.getElementById('toggle-password-icon');
       input.type = input.type === 'password' ? 'text' : 'password';
-      if (icon) icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+       if (icon) icon.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+       toggle.setAttribute('aria-label', input.type === 'password' ? 'Mostrar contraseña' : 'Ocultar contraseña');
     });
     this.checkAuthStatus();
   },

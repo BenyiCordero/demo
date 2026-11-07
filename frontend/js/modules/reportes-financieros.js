@@ -38,7 +38,7 @@ async function exportarPdf() {
   function encabezado() {
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(14);
-    pdf.text('SIGA - Reporte financiero', margen, y);
+    pdf.text('DEMO - Reporte financiero', margen, y);
     y += 8;
     pdf.setFont('helvetica', 'normal');
     pdf.setFontSize(9);

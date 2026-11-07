@@ -19,6 +19,7 @@ async function request(path) {
 }
 
 async function init() {
+  initTheme();
   $('#search').addEventListener('input', debounce(() => { state.search = $('#search').value.trim(); loadProducts(true); }, 300));
   document.querySelectorAll('[data-close-modal]').forEach(element => element.addEventListener('click', closeModal));
   try {
@@ -29,6 +30,21 @@ async function init() {
   } catch (error) { showStatus(error.message, true); }
   window.addEventListener('hashchange', handleHash);
   handleHash();
+}
+
+function initTheme() {
+  const key = 'demo-theme';
+  const apply = theme => {
+    document.documentElement.dataset.theme = theme;
+    const button = $('#theme-toggle');
+    if (button) button.innerHTML = theme === 'dark' ? '<span>☀</span>' : '<span>◐</span>';
+  };
+  apply(localStorage.getItem(key) === 'dark' ? 'dark' : 'light');
+  $('#theme-toggle')?.addEventListener('click', () => {
+    const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem(key, next);
+    apply(next);
+  });
 }
 
 async function loadProducts(reset = true) {

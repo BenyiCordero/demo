@@ -90,7 +90,28 @@ const Dashboard = {
 
     this.filtrarSidebar();
     this.bindEvents();
+    this.initTheme();
     this.checkListaNegra();
+  },
+
+  initTheme() {
+    const key = 'demo-theme';
+    const apply = theme => {
+      document.documentElement.dataset.theme = theme;
+      const button = document.getElementById('btn-theme-toggle');
+      if (button) button.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    };
+    const saved = localStorage.getItem(key);
+    apply(saved === 'dark' ? 'dark' : 'light');
+    const button = document.getElementById('btn-theme-toggle');
+    if (button && !button.dataset.bound) {
+      button.dataset.bound = 'true';
+      button.addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem(key, next);
+        apply(next);
+      });
+    }
   },
 
   filtrarSidebar() {
